@@ -1,0 +1,110 @@
+//
+// Copyright (C) 2006 The Android Open Source Project
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+cc_binary {
+    name="bm_kiss_int16_t",
+
+    srcs: [
+	"./test/benchkiss.c",
+	"./kiss_fft.c",
+	"./tools/kiss_fftnd.c",
+	"./tools/kiss_fftr.c",
+	"./test/pstats.c",
+	"./tools/kfc.c",
+	"./tools/kiss_fftndr.c",
+    ],
+
+    cflags: [
+	"-W",
+	"-Wall",
+	"-Wstrict-prototypes",
+	"-Wmissing-prototypes",
+	"-Waggregate-return",
+	"-Wcast-align",
+	"-Wcast-qual",
+	"-Wnested-externs",
+	"-Wshadow",
+	"-Wbad-function-cast",
+	"-Wwrite-strings",
+	"-ffast-math",
+	"-fomit-frame-pointer",
+	"-DFIXED_POINT=16",
+    ] + [
+        "-g",
+        "-O3",
+    ],
+
+    multilib: {
+        lib32: {
+            cflags: [
+                "-DSIZEOF_LONG_LONG=8",
+                "-DSIZEOF_LONG=4",
+                "-DSIZEOF_RLIM_T=4",
+                "-DHAVE_STRUCT_STAT64=1",
+            ],
+        },
+        lib64: {
+            cflags: [
+                "-DSIZEOF_LONG_LONG=8",
+                "-DSIZEOF_LONG=8",
+                "-DSIZEOF_RLIM_T=8",
+            ],
+        },
+    },
+
+    arch: {
+        arm: {
+            cflags: ["-DARM=1"] + ["-DHAVE_STRUCT___OLD_KERNEL_STAT=1"],
+
+	    local_include_dirs: [
+		"./",
+		"./tools/",
+	    ],
+        },
+        arm64: {
+            cflags: ["-DAARCH64=1"],
+
+	    local_include_dirs: [
+		"./",
+		"./tools/",
+	    ],
+        },
+        mips: {
+            enabled: false,
+        },
+        mips64: {
+            enabled: false,
+        },
+        x86: {
+            cflags: ["-DI386=1"] + ["-DHAVE_STRUCT___OLD_KERNEL_STAT=1"],
+
+	    local_include_dirs: [
+		"./",
+		"./tools/",
+	    ],
+        },
+        x86_64: {
+            cflags: ["-DX86_64=1"],
+
+	    local_include_dirs: [
+		"./",
+		"./tools/",
+	    ],
+        },
+    },
+
+}
+
